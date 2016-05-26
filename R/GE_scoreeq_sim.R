@@ -18,7 +18,7 @@
 #' temp_sig <- matrix(data=0.5, nrow=5, ncol=5)
 #' diag(temp_sig) <- 1
 #' sig_mat <- cor( rmvnorm(n=10, sigma=temp_sig) )
-#' rho_vec <- sig_mat[upper.tri(sig_mat)]
+#' rho_vec <- sig_mat[lower.tri(sig_mat)]
 #' mu_vec <- runif(3)
 #' beta_vec <- runif(6)
 #' GE_bias_results <- GE_bias_normal_squaredmis(beta_vec, mu_vec, rho_vec)
