@@ -21,7 +21,7 @@ Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.}
 }
 \description{
 Here we perform simulation to verify that we have solved for
-the correct \alpha values.
+the correct alpha values.
 }
 \examples{
 library(mvtnorm)

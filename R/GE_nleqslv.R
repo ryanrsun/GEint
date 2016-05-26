@@ -109,8 +109,8 @@ GE_nleqslv <- function(beta_vec, mu_vec, cov_vec, MU_ZZ, MU_ZM, MU_ZW, MU_WZ, MU
 	}
 	
 
-	solved_scoreqs = nleqslv::nleqslv(x=c(0,0,0,0,0,0), fn=score_eqs)
-	return(solved_scoreqs)
+	solved_scoreeqs = nleqslv::nleqslv(x=c(0,0,0,0,0,0), fn=score_eqs)
+	return(solved_scoreeqs)
 }
 
 

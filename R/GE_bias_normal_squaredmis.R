@@ -52,9 +52,9 @@ GE_bias_normal_squaredmis <- function(beta_vec, means_vec, rho_vec)
   BETA_Z <- beta_vec[5]  	
   BETA_M <- beta_vec[6]
   
-  MU_M <- means_vec[1]  		
-  MU_W <- means_vec[2]			
-  MU_Z <- means_vec[3]			
+  MU_Z <- means_vec[1]  		
+  MU_M <- means_vec[2]			
+  MU_W <- means_vec[3]			
   mu_f <- 1
   mu_h <- 1
   

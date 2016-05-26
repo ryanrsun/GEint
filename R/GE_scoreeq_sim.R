@@ -1,7 +1,7 @@
 #' GE_scoreeq_sim.R
 #'
 #' Here we perform simulation to verify that we have solved for
-#' the correct \alpha values.
+#' the correct alpha values.
 #' 
 #' @param num_sims The number of repetitions to run, default is 5000
 #' @param num_sub The number of subjects to simulate, default is 2000
