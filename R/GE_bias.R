@@ -34,169 +34,58 @@
 #' @examples 
 #' GE_bias_normal_squaredmis( beta_list=runif(n=6, min=0, max=1), rho_list=rep(0.3,1), prob_G=0.3)
 
-GE_bias_normal_squaredmis <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
+GE_bias <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 {
-  # Need survival function.
-  surv <- function(x) {1-pnorm(x)}
-  
   # Record some initial quantities
-  rho_GE <- rho_list[[1]]; rho_GZ <- rho_list[[2]]; rho_EZ <- rho_list[[3]]
-  rho_GW <- rho_list[[4]]; rho_EW <- rho_list[[5]]; rho_ZW <- rho_list[[6]]
-  w <- qnorm(1-prob_G)					
-  r_GE <- rho_GE / (2*dnorm(w))	
-  r_GZ <- rho_GZ / (2*dnorm(w))
-  r_GW <- rho_GW / (2*dnorm(w))
-  num_Z <- length(beta_list[[5]])
-  num_W <- length(beta_list[[6]])
-  	
   beta_0 <- beta_list[[1]]; beta_G <- beta_list[[2]]; beta_E <- beta_list[[3]]
   beta_I <- beta_list[[4]]; BETA_Z <- beta_list[[5]]; BETA_M <- beta_list[[6]]
 
-  # Some error checking, make sure the covariance matrix is ok
-  translated_inputs <- GE_translate_inputs(beta_list, rho_list, prob_G, cov_Z, cov_W)
-  sig_mat <- translated_inputs$sig_mat_total
-  sig_mat_ZZ <- translated_inputs$sig_mat_ZZ
-  sig_mat_WW <- translated_inputs$sig_mat_WW
-								
-  # Obvious and by assumptions
-  MU_Z <- rep(0, num_Z) 		# Some obvious ones
-  MU_M <- rep(1, num_W)		
-  MU_W <- rep(0, num_W)			
-  mu_f <- 1
-  mu_h <- 1
-  
-  # Done translating inputs
-  # Now calculate other necessary terms that have 
-  # been determined by our assumptions + inputs
-  
-  ########################
-  # Covariances
-  mu_GE <- rho_GE
-  mu_Gf <- 2*r_GE^2*w*dnorm(w) + 2*surv(w) - 2*prob_G
-  mu_Gh <- mu_Gf
-  mu_GG <- 2*prob_G*(1-prob_G)
-  MU_GZ <- rho_GZ  	# Vector
-  MU_GW <- rho_GW		# Vector
-  MU_GM <- 	2*r_GW^2*w*dnorm(w) + 2*surv(w) - 2*prob_G	# Vector, see gen_cor_bin_normal for explanation
-  MU_EM <- 	rep(0, num_W)				# Vector, in particular because third moment of W is 0
-  MU_EZ <- rho_EZ			# Vector
-  MU_EW <- rho_EW			# Vector
-  mu_EE <- 1
-  mu_Ef <- 0
-  MU_fZ <- 	rep(0, num_Z)	# Vector
-  MU_fW <- 	rep(0, num_W)		# Vector
-  
+
+  # Some means
+  mu_f <- mu_list[[1]]; mu_h <- mu_list[[2]]; MU_M <- mu_list[[3]]
+  MU_Z <- mu_list[[4]]; MU_W <- mu_list[[5]]
+ 
+  # Some covariances
+  mu_GG <- cov_list[[1]]
+  mu_GE <- cov_list[[2]]
+  mu_Gf <- cov_list[[3]]
+  mu_Gh <- cov_list[[4]]
+  MU_GZ <- cov_list[[5]] 
+  MU_GM <- cov_list[[6]]
+  MU_GW <- cov_list[[7]]
+  mu_EE <- cov_list[[8]]
+  mu_Ef <- cov_list[[9]]
+  MU_EZ <- cov_list[[10]]
+  MU_EM <- cov_list[[11]] 
+  MU_EW <- cov_list[[12]]
+  MU_fZ <- cov_list[[13]] 
+  MU_fW <- cov_list[[14]]
+
+
   ########################
   # Matrix covariances
   # MU_ZW is not the same as MU_WZ because the dimensions of the matrix are not the same!
-  # Remember the covariances in rho_ZW are in the order cov(Z_1,W_1), cov(Z_1,W_2), ..., cov(Z_2,W_1),...
-  MU_ZW <- matrix(data=rho_ZW, nrow=num_Z, ncol=num_W, byrow=TRUE)	# Matrix	 
-  MU_WZ <- t(MU_ZW)
-  MU_ZM <- matrix(data=0, nrow=num_Z, ncol=num_W) 		# Matrix
-  MU_WM <- matrix(data=0, nrow=num_W, ncol=num_W) 			# Matrix
-  MU_ZZ <- sig_mat_ZZ 		# Matrix
-  MU_WW <- sig_mat_WW		# Matrix
+  MU_ZZ <- cov_mat_list[[1]]
+  MU_WW <- cov_mat_list[[2]]
+  MU_ZW <- cov_mat_list[[3]]
+  MU_WZ <- cov_mat_list[[4]]
+  MU_ZM <- cov_mat_list[[5]]	
+  MU_WM <- cov_mat_list[[6]]			
   
-  
-  ########################
-  # Higher order moments
-  # We need as intermediate quantities E[G_1E], E[G_1E^2], E[G_1E^3], E[G_1G_2E], E[G_1G_2E^2], E[G1EZ], 
-  # E[G1EW], E[G1EW^2], E[G1WE^2], E[G1ZE^2], E[G1G2E^2]
-  mu_G1_E <- r_GE*dnorm(w)
-  mu_G1_EE <- r_GE^2*w*dnorm(w) + surv(w)
-  mu_G1_EEE <- r_GE^3*w^2*dnorm(w) - r_GE^3*dnorm(w) + 3*r_GE*dnorm(w)
-  
-  # E[G1G2E] requires numerical integration
-  temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
-  f_G1_G2_E <- function(x,w,r_GE) {
-  	x*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
-  }
-  mu_G1_G2_E <- quadinf(f=f_G1_G2_E, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
-  
-  # E[G1G2E^2] requires numerical integration
-  temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
-  f_G1_G2_EE <- function(x,w,r_GE) {
-  	x^2*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
-  }
-  mu_G1_G2_EE <- quadinf(f=f_G1_G2_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
-  
-  # E[G1G2E^3] requires numerical integration
-  temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
-  f_G1_G2_EEE <- function(x,w,r_GE) {
-  	x^3*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
-  }
-  mu_G1_G2_EEE <- quadinf(f=f_G1_G2_EEE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
-    
-  # See gen_cor_bin_normal to see how to do these
-  mu_GGE <- 2*mu_G1_E + 2*mu_G1_G2_E - 8*prob_G*mu_G1_E
-  mu_GGh <- 2*mu_G1_EE + 2*mu_G1_G2_EE + 4*prob_G^2*1 - 8*prob_G*mu_G1_EE
-  mu_GEE <- mu_Gf
-  mu_GEf <- 2*(r_GE^3*w^2*dnorm(w) - r_GE^3*dnorm(w) + 3*r_GE*dnorm(w))
-  mu_GEh <- mu_GEf
-  
-  mu_GGEE <- 2*mu_G1_EE + 2*mu_G1_G2_EE + 4*prob_G^2*1 - 8*prob_G*mu_G1_EE
-  mu_GGEf <- 2*mu_G1_EEE + 2*mu_G1_G2_EEE + 4*prob_G^2*0 - 8*prob_G*mu_G1_EEE
-  mu_GGEh <- mu_GGEf
-  
-  ##############
-  # Harder ones involving Z and W
-  
-  # E[G1EZ] requires numerical integration
-  f_G1_E_Z <- function(x, w, r_EZ, r_GE, r_GZ) {
-  	( r_EZ * x * surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / sqrt(1-r_GE^2) ) * 
-  		(r_GZ-r_GE*r_GZ) / sqrt(1-r_GE^2) ) * x* dnorm(x)
-  }
-  mu_G1_E_Z <- rep(NA, num_Z)
-  for (i in 1:num_Z) {
-  	mu_G1_E_Z[i] <- quadinf(f= f_G1_E_Z, xa=-Inf, xb=Inf, w=w, r_EZ=rho_EZ[i], r_GE=r_GE, r_GZ=r_GZ[i])$Q
-  }
-  
-  # E[G1EW] requires numerical integration
-  f_G1_E_W <- function(x, w, r_EW, r_GE, r_GW) {
-  	( r_EW * x * surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / sqrt(1-r_GE^2) ) * 
-  		(r_GW-r_GE*r_EW) / sqrt(1-r_GE^2) ) * x* dnorm(x)
-  }
-  mu_G1_E_W <- rep(NA, num_W)
-  for (i in 1:num_W) {
-  	mu_G1_E_W[i] <- quadinf(f= f_G1_E_W, xa=-Inf, xb=Inf, w=w, r_EW=rho_EW[i], r_GE=r_GE, r_GW=r_GW[i])$Q
-  }
-  
-  # E[G1EW^2] requires numerical integration
-  f_G1_E_WW <- function(x, w, r_GE, r_GW, r_EW) {
-  	( r_EW * x* surv( (w-x*r_GW) / sqrt(1-r_GW^2) ) + dnorm( (w-r_GW*x) / 
-  		sqrt(1-r_GW^2) ) * (r_GE-r_GW*r_EW) / sqrt(1-r_GW^2) ) * x^2 * dnorm(x)
-  }
-  mu_G1_E_WW <- rep(NA, num_W)
-  for (i in 1:num_W) {
-  	mu_G1_E_WW[i] <- quadinf(f=f_G1_E_WW, xa=-Inf, xb=Inf, w=w , r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
-  }
-  
-  # E[G1WE^2] requires numerical integration
-  f_G1_W_EE <- function(x, w, r_GE, r_GW, r_EW) {
-  	( r_EW * x* surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / 
-  		sqrt(1-r_GE^2) ) * (r_GW-r_GE*r_EW) / sqrt(1-r_GE^2) ) * x^2 * dnorm(x)
-  }
-  mu_G1_W_EE <- rep(NA, num_W)
-  for (i in 1:num_W) {
-  	mu_G1_W_EE[i] <- quadinf(f=f_G1_W_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
-  }
-  
-  # E[G1ZE^2] requires numerical integration
-  f_G1_Z_EE <- function(x, w, r_GE, r_GZ, r_EZ) {
-  	( r_EZ * x* surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / 
-  		sqrt(1-r_GE^2) ) * (r_GZ-r_GE*r_EZ) / sqrt(1-r_GE^2) ) * x^2 * dnorm(x)
-  }
-  mu_G1_Z_EE <- rep(NA, num_Z)
-  for (i in 1:num_Z) {
-  	mu_G1_Z_EE[i] <- quadinf(f=f_G1_Z_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GZ=r_GZ[i], r_EZ=rho_EZ[i])$Q
-  }
-
-  # See gen_cor_bin_normal to see how to do these (vectors)
-  MU_GEZ <- 2*mu_G1_E_Z - 2*prob_G*rho_EZ			# Vector
-  MU_GEW <- 2*mu_G1_E_W	- 2*prob_G*rho_EW			# Vector
-  MU_GEM <-	2*mu_G1_E_WW							# Vector
-  MU_GhW <- 2*mu_G1_W_EE
-  MU_GhZ <- 2*mu_G1_Z_EE
+  # Some higher order moments
+  mu_GGE <- HOM_list[[1]]
+  mu_GGh <- HOM_list[[2]]
+  mu_GEE <- HOM_list[[3]]
+  mu_GEf <- HOM_list[[4]]
+  mu_GEh <- HOM_list[[5]]
+  MU_GEZ <- HOM_list[[6]]
+  MU_GEM <- HOM_list[[7]]
+  MU_GEW <- HOM_list[[8]]
+  MU_GhW <- HOM_list[[9]]
+  MU_GhZ <- HOM_list[[10]]
+  mu_GGEE <- HOM_list[[11]]
+  mu_GGEf <- HOM_list[[12]]
+  mu_GGEh <- HOM_list[[13]]
  
   
   ########################
@@ -272,12 +161,5 @@ GE_bias_normal_squaredmis <- function(beta_list, rho_list, prob_G, cov_Z=NULL, c
     t(MU_M) %*% BETA_M - t(MU_W) %*% ALPHA_W
   
   # Return 
-  return(list(alpha_list=list(alpha_0, alpha_G, alpha_E, alpha_I, ALPHA_Z, ALPHA_W),
-              beta_list = list(beta_0, beta_G, beta_E, beta_I, BETA_Z, BETA_M),
-              mu_list = list(mu_f, mu_h, MU_M),
-              cov_list = list(mu_GG, mu_GE, mu_Gf, mu_Gh, MU_GZ, MU_GM, MU_GW, mu_EE,
-              mu_Ef, MU_EZ, MU_EM, MU_EW, MU_fZ, MU_fW),
-              MU_ZZ=MU_ZZ, MU_ZM=MU_ZM, MU_ZW=MU_ZW, MU_WZ=MU_WZ, MU_WM=MU_WM, MU_WW=MU_WW,
-              HOM_list = list(mu_GGE, mu_GGh, mu_GEE, mu_GEf, mu_GEh, MU_GEZ, MU_GEM, MU_GEW,
-              MU_GhW, MU_GhZ, mu_GGEE, mu_GGEf, mu_GGEh)))
+  return(list(alpha_0, alpha_G, alpha_E, alpha_I, ALPHA_Z, ALPHA_W))
 }
