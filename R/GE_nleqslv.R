@@ -1,33 +1,26 @@
 #' GE_nleqslv
-#'
-#' Deprecated version as of Sep 27, 2016.  Designed only to work with scalar Z and W/M.
-#'
-#' Here we use the package nleqslv to get a numerical solution which
-#' we can use to check our direct solution.
+#'#'
+#' Uses package nleqslv to get a numerical solution to the score equations, which
+#' we can use to check our direct solution from GE_bias().
 #' 
 #' @param beta_list A list of the effect sizes in the true model.
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
-#' @param mu_list A list of the means for f, h, M, Z, W in that order.
-#' @param cov_list A list of the covariances in the order
-#' (mu_GG, mu_GE, mu_Gf, mu_Gh, MU_GZ, MU_GM, MU_GW, mu_EE,
-#' mu_Ef, MU_EZ, MU_EM, MU_EW, MU_fZ, MU_fW)
-#' @param MU_ZZ Matrix mean
-#' @param MU_ZM Matrix mean
-#' @param MU_ZW Matrix mean
-#' @param MU_WZ Matrix mean
-#' @param MU_WM Matrix mean
-#' @param MU_WW Matrix mean
-#' @param HOM_list A vector of the higher order moments in the order
-#' (mu_GGE, mu_GGh, mu_GEE, mu_GEf, mu_GEh, MU_GEZ, MU_GEM, MU_GEW,
-#' MU_GhW, MU_GhZ, mu_GGEE, mu_GGEf, mu_GGEh)
+#' If Z or M is a vector, then beta_Z and beta_M should be vectors.
+#' @param cov_list A list of expectations (which happen to be covariances if all covariates
+#' are centered at 0) in the order specified by GE_enumerate_inputs().
+#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs().
+#' @param mu_list A list of means as specified by GE_enumerate_inputs().
+#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs().
+#' 
+#' @return A list of the fitted coefficients alpha
 #'
-#' @keywords nonlinear equation
+#' @keywords 
 #' @export
 #' @examples 
-#' GE_bias_results <- GE_bias_normal_squaredmis(runif(6), runif(3), runif(10))
-#' GE_nleqslv(GE_bias_results$beta_list, GE_bias_results$mu_list, GE_bias_results$cov_list,
-#' GE_bias_results$MU_ZZ, GE_bias_results$MU_ZM, GE_bias_results$MU_ZW, GE_bias_results$MU_WZ,
-#' GE_bias_results$MU_WM, GE_bias_results$MU_WW, GE_bias_results$HOM_list)
+#' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
+#' GE_nleqslv(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
+#'						solutions$mu_list, solutions$HOM_list)
 
 GE_nleqslv <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 {
@@ -42,11 +35,11 @@ GE_nleqslv <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 
 	mu_f <- mu_list[[1]]
 	mu_h <- mu_list[[2]]
-	MU_M <- mu_list[[3]]
-	MU_Z <- mu_list[[4]]
+	MU_Z <- mu_list[[3]]
+	MU_M <- mu_list[[4]]
 	MU_W <- mu_list[[5]]
 	
-	num_Z <- length(BETA_Z)
+	num_Z <- length(MU_Z)
 	num_W <- length(MU_W)
 	
 	mu_GG <- cov_list[[1]]

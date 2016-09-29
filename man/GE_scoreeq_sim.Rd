@@ -4,38 +4,43 @@
 \alias{GE_scoreeq_sim}
 \title{GE_scoreeq_sim.R}
 \usage{
-GE_scoreeq_sim(num_sims = 5000, num_sub = 2000, beta_vec, mu_vec, rho_vec)
+GE_scoreeq_sim(num_sims = 5000, num_sub = 2000, beta_list, prob_G, rho_list,
+  cov_Z = NULL, cov_W = NULL)
 }
 \arguments{
-\item{num_sims}{The number of repetitions to run, default is 5000}
+\item{beta_list}{A list of the effect sizes in the true model.
+Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
+If Z or M is a vector, then beta_Z and beta_M should be vectors.}
 
-\item{num_sub}{The number of subjects to simulate, default is 2000}
+\item{prob_G}{Probability that each allele is equal to 1.  Since each SNP has
+two alleles, the expectation of G is 2*prob_G.}
 
-\item{beta_vec}{A vector of the effect sizes in the true model.
-Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.}
+\item{rho_list}{A list of the 6 pairwise covariances between the
+covariates.  These should be in the order (1) cov_GE (2) cov_GZ (3) cov_EZ
+(4) cov_GW (5) cov_EW (6) cov_ZW.
+Again if Z or W are vectors then terms like cov_GZ should be vectors (in the order
+cov(G,Z_1),...,cov(G,Z_p)) where Z is of dimension p, and similarly for W.
+If Z or M are vectors, then cov_ZW should be a vector in the order (cov(Z_1,W_1),...,cov(Z_1,W_q),
+cov(Z_2,W_1),........,cov(Z_p,W_q) where Z is a vector of length p and W is a vector of length q.}
 
-\item{mu_vec}{A vector of the means for M, W, Z, in that order.}
+\item{cov_Z}{Only used if Z is a vector, gives the covariance matrix of Z (remember by assumption
+Z has mean 0 and variance 1).  The (i,j) element of the matrix should be the (i-1)(i-2)/2+j element
+of the vector.}
 
-\item{rho_vec}{A vector of the covariances in the order:
-(rho_GE, rho_GZ, rho_GM, rho_GW, rho_EZ, rho_EM, rho_EW, rho_ZM, rho_ZW, rho_WM)}
+\item{cov_W}{Only used if W is a vector, gives the covariance matrix of W (remember by assumption
+W has mean 0 and variance 1).  The (i,j) element of the matrix should be the (i-1)(i-2)/2+j element
+of the vector.}
+}
+\value{
+A list of the fitted values alpha
 }
 \description{
 Here we perform simulation to verify that we have solved for
-the correct alpha values.
+the correct alpha values in GE_bias_norm_squaredmis().
+Make the same assumptions as in GE_bias_norm_squaredmis().
 }
 \examples{
-library(mvtnorm)
-temp_sig <- matrix(data=0.5, nrow=5, ncol=5)
-diag(temp_sig) <- 1
-sig_mat <- cor( rmvnorm(n=10, sigma=temp_sig) )
-rho_vec <- sig_mat[lower.tri(sig_mat)]
-mu_vec <- runif(3)
-beta_vec <- runif(6)
-GE_bias_results <- GE_bias_normal_squaredmis(beta_vec, mu_vec, rho_vec)
-GE_nleqslv(GE_bias_results$beta_vec, GE_bias_results$mu_vec, GE_bias_results$cov_vec,
-GE_bias_results$MU_ZZ, GE_bias_results$MU_ZM, GE_bias_results$MU_ZW, GE_bias_results$MU_WZ,
-GE_bias_results$MU_WM, GE_bias_results$MU_WW, GE_bias_results$HOM_vec)
-GE_scoreeq_sim(beta_vec=beta_vec, mu_vec=mu_vec, rho_vec=rho_vec)
+GE_scoreeq_sim( beta_list=as.list(runif(n=6, min=0, max=1)), 
+						rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 }
-\keyword{simulation}
 

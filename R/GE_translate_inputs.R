@@ -1,8 +1,9 @@
 #' GE_translate_inputs.R
 #'
-#' Internal function called by GE_bias_normal.R and GE_scoreeq_sim.R.
-#' Translate the rho_list inputs and return a total covariance matrix for simulation/
-#' checking validity of covariance structure.
+#' Mostly for internal use, function called by GE_bias_normal() and GE_scoreeq_sim()
+#' to translate the rho_list inputs and return a total covariance matrix for simulation/
+#' checking validity of covariance structure.  If invalid covariance structure, will stop
+#' and return an error message.
 #' 
 #' @param rho_list A list of the 6 pairwise covariances between the
 #' covariates.  These should be in the order (1) cov_GE (2) cov_GZ (3) cov_EZ
@@ -18,6 +19,17 @@
 #' of the vector.
 #' @param prob_G Probability that each allele is equal to 1.  Since each SNP has
 #' two alleles, the expectation of G is 2*prob_G.
+#'
+#' @return A list with the elements:
+#' \item{sig_mat_total}{The sigma parameter for rmvnorm call to generate our data.}
+#' \item{sig_mat_ZZ}{The covariance matrix of Z, i.e. E[ZZ^T]}
+#' \item{sig_mat_WW}{The covariance matrix of W, i.e. E[WW^T]}
+#'
+#' @keywords
+#' @export
+#' @examples 
+#' GE_translate_inputs( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
 GE_translate_inputs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
 {
@@ -106,7 +118,7 @@ GE_translate_inputs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=N
     if (!isSymmetric(sig_mat_total)) {stop("Problem building covariance matrix!")}
     
     # Now make sure we can actually generate data with this structure
-    test_data <- tryCatch(rmvnorm(n=1, sigma=sig_mat_total), 
+    test_data <- tryCatch(mvtnorm::rmvnorm(n=1, sigma=sig_mat_total), 
     				warning=function(w) w, error=function(e) e)
     if (class(test_data)[1] != 'matrix') {stop('You specified an impossible covariance matrix!')}
     

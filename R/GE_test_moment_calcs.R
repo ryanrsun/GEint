@@ -1,7 +1,9 @@
 #' GE_test_moment_calcs.R
 #'
-#' An internal test function to ensure the higher order moments (covariances)
-#' calculated in GE_bias_normal_squaredmis.R are correct.
+#' Test function mostly for internal use to ensure the higher order moments (covariances)
+#' calculated in GE_bias_normal_squaredmis() are correct. Will give warning messages if
+#' some calculations appear to be incorrect.  If receive warning messages, run again, and
+#' if still receive the same warning messages, something may be wrong.
 #'
 #' @param rho_list A list of the 6 pairwise covariances between the
 #' covariates.  These should be in the order (1) cov_GE (2) cov_GZ (3) cov_EZ
@@ -20,10 +22,12 @@
 #' @param num_sum Number of subjects to do the simulation with.
 #' @param test_threshold How much margin for error on tests?
 #'
-#' @keywords validation
+#' @return Nothing
+#'
 #' @export
+#' @keywords
 #' @examples 
-#' test_moment_calcs(beta_list=runif(n=6, min=0, max=1), rho_list=rep(0.3,1), prob_G=0.3)
+#' GE_test_moment_calcs(beta_list=runif(n=6, min=0, max=1), rho_list=rep(0.3,1), prob_G=0.3)
 
 GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=1000000, test_threshold=0.01)
 {
@@ -50,7 +54,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
 	sig_mat_WW <- translated_inputs$sig_mat_WW
 									
 	# Generate test data
-	test_data <- rmvnorm(n=num_sub, sigma=sig_mat)
+	test_data <- mvtnorm::rmvnorm(n=num_sub, sigma=sig_mat)
 	
 	# Get the individual components
   	G1 <- as.numeric(test_data[,1] > w)
@@ -217,21 +221,21 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   	
   	temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
   	f_G1_G2_E <- function(x,w,r_GE) {
-  		x*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
+  		x*dnorm(x)*mvtnorm::pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
   	}
-  	mu_G1_G2_E <- quadinf(f=f_G1_G2_E, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
+  	mu_G1_G2_E <- pracma::quadinf(f=f_G1_G2_E, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
   
   	temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
   	f_G1_G2_EE <- function(x,w,r_GE) {
-  		x^2*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
+  		x^2*dnorm(x)*mvtnorm::pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
   	}
-  	mu_G1_G2_EE <- quadinf(f=f_G1_G2_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
+  	mu_G1_G2_EE <- pracma::quadinf(f=f_G1_G2_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
   
   	temp_sig <- matrix(data=c(1-r_GE^2, -r_GE^2, -r_GE^2, 1-r_GE^2), nrow=2)
   	f_G1_G2_EEE <- function(x,w,r_GE) {
-  		x^3*dnorm(x)*pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
+  		x^3*dnorm(x)*mvtnorm::pmvnorm(lower=c(w,w), upper=c(Inf,Inf), mean=c(r_GE*x, r_GE*x), sigma=temp_sig)
   	}
-  	mu_G1_G2_EEE <- quadinf(f=f_G1_G2_EEE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
+  	mu_G1_G2_EEE <- pracma::quadinf(f=f_G1_G2_EEE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE)$Q[1]
   
   	
   	# Higher order moments, see gen_cor_bin_normal to see how to do these
@@ -290,7 +294,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   	}
   	mu_G1_E_Z <- rep(NA, num_Z)
   	for (i in 1:num_Z) {
-  		mu_G1_E_Z[i] <- quadinf(f= f_G1_E_Z, xa=-Inf, xb=Inf, w=w, r_EZ=rho_EZ[i], r_GE=r_GE, r_GZ=r_GZ[i])$Q
+  		mu_G1_E_Z[i] <- pracma::quadinf(f= f_G1_E_Z, xa=-Inf, xb=Inf, w=w, r_EZ=rho_EZ[i], r_GE=r_GE, r_GZ=r_GZ[i])$Q
   		temp_test <- mu_G1_E_Z[i] - mean(G1*E*Z[,i])
   		if (abs(temp_test) > test_threshold) {warning('Problem with mu_G1_E_Z')}
   	}
@@ -301,7 +305,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   			(r_GW-r_GE*r_EW) / sqrt(1-r_GE^2) ) * x* dnorm(x)
   	}
   	for (i in 1:num_W) {
-  		mu_G1_E_W[i] <- quadinf(f= f_G1_E_W, xa=-Inf, xb=Inf, w=w, r_EW=rho_EW[i], r_GE=r_GE, r_GW=r_GW[i])$Q
+  		mu_G1_E_W[i] <- pracma::quadinf(f= f_G1_E_W, xa=-Inf, xb=Inf, w=w, r_EW=rho_EW[i], r_GE=r_GE, r_GW=r_GW[i])$Q
   		temp_test <- mu_G1_E_W[i] - mean(G1*E*W[,i])
   		if (abs(temp_test) > test_threshold) {warning('Problem with mu_G1_E_W')}
 	}
@@ -312,7 +316,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   			sqrt(1-r_GW^2) ) * (r_GE-r_GW*r_EW) / sqrt(1-r_GW^2) ) * x^2 * dnorm(x)
   	}
   	for (i in 1:num_W) {
-  		mu_G1_E_WW[i] <- quadinf(f=f_G1_E_WW, xa=-Inf, xb=Inf, w=w , r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
+  		mu_G1_E_WW[i] <- pracma::quadinf(f=f_G1_E_WW, xa=-Inf, xb=Inf, w=w , r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
   		temp_test <- mu_G1_E_WW[i] - mean(G1*E*W[,i]*W[,i])
   		if (abs(temp_test) > test_threshold) {warning('Problem with mu_G1_E_WW')}
   	}
@@ -323,7 +327,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   			sqrt(1-r_GE^2) ) * (r_GW-r_GE*r_EW) / sqrt(1-r_GE^2) ) * x^2 * dnorm(x)
   	}
   	for (i in 1:num_W) {
-  		mu_G1_W_EE[i] <- quadinf(f=f_G1_W_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
+  		mu_G1_W_EE[i] <- pracma::quadinf(f=f_G1_W_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GW=r_GW[i], r_EW=rho_EW[i])$Q
   		temp_test <- mu_G1_W_EE[i] - mean(G1*W[,i]*E*E)
   		if (abs(temp_test) > test_threshold) {warning('Problem with mu_G1_W_EE')}
   	}
@@ -334,7 +338,7 @@ GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W
   			sqrt(1-r_GE^2) ) * (r_GZ-r_GE*r_EZ) / sqrt(1-r_GE^2) ) * x^2 * dnorm(x)
   	}	
   	for (i in 1:num_Z) {
-  		mu_G1_Z_EE[i] <- quadinf(f=f_G1_Z_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GZ=r_GZ[i], r_EZ=rho_EZ[i])$Q
+  		mu_G1_Z_EE[i] <- pracma::quadinf(f=f_G1_Z_EE, xa=-Inf, xb=Inf, w=w, r_GE=r_GE, r_GZ=r_GZ[i], r_EZ=rho_EZ[i])$Q
   		temp_test <- mu_G1_Z_EE[i] - mean(G1*Z[,i]*E*E)
   		if (abs(temp_test) > test_threshold) {warning('Problem with mu_G1_Z_EE')}
  	}

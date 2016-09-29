@@ -1,15 +1,20 @@
 #' GE_enumerate_inputs.R
 #'
-#' Call this function only to display the necessary inputs for GE_bias.
+#' Call this function to display the necessary inputs for GE_bias.  If you see a term like
+#' mu_Gf, that means it is the scalar E[G*f(E)].  If you see a term like MU_GM, that means it
+#' is the vector c(E[G*M_1], E[G*M_2], ..., E[G*M_q]) where M is of dimension q.  For terms in 
+#' cov_mat_list like E[ZZ], these should be matrices where the (i,j) element is E[Z_i*Z_j].
 #'
-#' @keywords inputs
+#' @return Nothing
+#'
+#' @keywords
 #' @export
 #' @examples 
 #' GE_enumerate_inputs()
 
 GE_enumerate_inputs <- function()
 {
-	beta_help <- paste("beta_vec should contain the following 6 inputs (in order):",
+	beta_help <- paste("beta_list should contain the following 6 inputs (in order):",
 					"beta_0",
 					"beta_G",
 					"beta_E",
@@ -17,14 +22,14 @@ GE_enumerate_inputs <- function()
 					"BETA_Z",
 					"BETA_M", sep='\n')
 
-	mu_help <- paste("mu_vec should contain the following 5 inputs (in order):",
+	mu_help <- paste("mu_list should contain the following 5 inputs (in order):",
 					"mu_f",
 					"mu_h",
 					"MU_Z",
 					"MU_M",
 					"MU_W", sep='\n')
 					
-	cov_help <- paste("cov_vec should contain the following 14 inputs (in order):",
+	cov_help <- paste("cov_list should contain the following 14 inputs (in order):",
 					"mu_GG",
 					"mu_GE",
 					"mu_Gf",
@@ -40,15 +45,15 @@ GE_enumerate_inputs <- function()
 					"MU_fZ",
 					"MU_fW", sep='\n')
 					
-	mat_help <- paste("You will also need to know the expectations of the following random matrices:",
+	mat_help <- paste("cov_mat_list should be a list of the matrices:",
 					"MU_ZZ = Z%*%t(Z)",
-					"MU_ZM",
+					"MU_WW",
 					"MU_ZW",
 					"MU_WZ",
-					"MU_WM",
-					"MU_WW", sep='\n')
+					"MU_ZM",
+					"MU_WM", sep='\n')
 					
-	HOM_help <- paste("You will need to know the following higher order moments:",
+	HOM_help <- paste("HOM_list should be a list of the following higher order moments:",
 					"mu_GGE",
 					"mu_GGh",
 					"mu_GEE",
