@@ -43,7 +43,6 @@
 #' and GE_bias().}
 #' \item{HOM_list}{List of calculated Higher Order Moments for use with GE_nleqslv() and GE_bias().}
 #'
-#' @keywords
 #' @export
 #' @examples 
 #' GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 

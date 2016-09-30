@@ -25,7 +25,7 @@
 #' \item{sig_mat_ZZ}{The covariance matrix of Z, i.e. E[ZZ^T]}
 #' \item{sig_mat_WW}{The covariance matrix of W, i.e. E[WW^T]}
 #'
-#' @keywords
+#' @keywords internal
 #' @export
 #' @examples 
 #' GE_translate_inputs( beta_list=as.list(runif(n=6, min=0, max=1)), 

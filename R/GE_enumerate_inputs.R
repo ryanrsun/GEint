@@ -7,7 +7,6 @@
 #'
 #' @return Nothing
 #'
-#' @keywords
 #' @export
 #' @examples 
 #' GE_enumerate_inputs()

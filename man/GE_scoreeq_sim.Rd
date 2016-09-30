@@ -8,6 +8,10 @@ GE_scoreeq_sim(num_sims = 5000, num_sub = 2000, beta_list, prob_G, rho_list,
   cov_Z = NULL, cov_W = NULL)
 }
 \arguments{
+\item{num_sims}{The number of simulations to run, we suggest 5000.}
+
+\item{num_sub}{The number of subjects to generate in every simulation, we suggest 2000.}
+
 \item{beta_list}{A list of the effect sizes in the true model.
 Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 If Z or M is a vector, then beta_Z and beta_M should be vectors.}

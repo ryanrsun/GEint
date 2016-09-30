@@ -11,7 +11,8 @@
 #' 
 #' @return The p-value for the interaction effect
 #'
-#' @keywords
+#' @import stats
+#'
 #' @export
 #' @examples 
 #' E <- rnorm(n=500)

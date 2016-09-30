@@ -4,6 +4,8 @@
 #' the correct alpha values in GE_bias_norm_squaredmis().
 #' Make the same assumptions as in GE_bias_norm_squaredmis().
 #'
+#' @param num_sims The number of simulations to run, we suggest 5000.
+#' @param num_sub The number of subjects to generate in every simulation, we suggest 2000.
 #' @param beta_list A list of the effect sizes in the true model.
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 #' If Z or M is a vector, then beta_Z and beta_M should be vectors.
@@ -25,7 +27,6 @@
 #'
 #' @return A list of the fitted values alpha
 #'
-#' @keywords
 #' @export
 #' @examples 
 #' GE_scoreeq_sim( beta_list=as.list(runif(n=6, min=0, max=1)), 

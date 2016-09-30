@@ -25,11 +25,12 @@
 #' @return Nothing
 #'
 #' @export
-#' @keywords
+#' @keywords internal
 #' @examples 
-#' GE_test_moment_calcs(beta_list=runif(n=6, min=0, max=1), rho_list=rep(0.3,1), prob_G=0.3)
+#' GE_test_moment_calcs(beta_list=as.list(runif(n=6, min=0, max=1)), 
+#'			rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
-GE_test_moments_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=1000000, test_threshold=0.01)
+GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=1000000, test_threshold=0.01)
 {
 	# Need survival function
   	surv <- function(x) {1-pnorm(x)}

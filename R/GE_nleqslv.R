@@ -14,7 +14,6 @@
 #' 
 #' @return A list of the fitted coefficients alpha
 #'
-#' @keywords 
 #' @export
 #' @examples 
 #' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
