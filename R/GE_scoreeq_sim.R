@@ -29,7 +29,7 @@
 #'
 #' @export
 #' @examples 
-#' GE_scoreeq_sim( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' GE_scoreeq_sim( num_sims=10, beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
 GE_scoreeq_sim <- function(num_sims=5000, num_sub=2000, beta_list, prob_G, rho_list, cov_Z=NULL, cov_W=NULL)
