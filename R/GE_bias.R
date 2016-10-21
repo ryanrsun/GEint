@@ -113,7 +113,7 @@ GE_bias <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
   alpha_I_num <- beta_E * (-mu_f*mu_GE - mu_Gf*mu_GGE/mu_GG + mu_GEf + D * (mu_Ef - mu_Gf*mu_GE/mu_GG)) +
     beta_E * E %*% (-mu_f*MU_Z - MU_GZ*mu_Gf/mu_GG + MU_fZ + A * (mu_Ef - mu_Gf*mu_GE/mu_GG)) + 
     beta_I * (-mu_Gh*mu_GE - mu_GGh*mu_GGE/mu_GG + mu_GGEh + D * (mu_GEh - mu_GGh*mu_GE/mu_GG)) + 
-    beta_I * E %*% (-mu_Gh*MU_Z - MU_GZ*mu_GGh/mu_GG + A * (mu_GEh - mu_GGh*mu_GE/mu_GG)) + 
+    beta_I * E %*% (MU_GhZ -mu_Gh*MU_Z - MU_GZ*mu_GGh/mu_GG + A * (mu_GEh - mu_GGh*mu_GE/mu_GG)) + 
     t(MU_GEM - MU_M*mu_GE - MU_GM*mu_GGE/mu_GG + D * (MU_EM - MU_GM*mu_GE/mu_GG)) %*% BETA_M + 
     E %*% (A %*% t(MU_EM - MU_GM*mu_GE/mu_GG) - MU_Z%*%t(MU_M) - MU_GZ%*%t(MU_GM)/mu_GG + MU_ZM) %*% BETA_M - 
     beta_E * EFF %*% (-mu_f*MU_W - MU_GW*mu_Gf/mu_GG + MU_fW + B %*% as.matrix(mu_Ef - mu_Gf*mu_GE/mu_GG)) - 
@@ -126,7 +126,7 @@ GE_bias <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
   alpha_I_denom <- EFF %*% ( MU_W*mu_GE + MU_GW*mu_GGE/mu_GG - MU_GEW + B * (mu_GGE*mu_GE/mu_GG - mu_GEE) ) +
     EFF %*% C %*% ( MU_Z*mu_GE + MU_GZ*mu_GGE/mu_GG - MU_GEZ + A * (mu_GGE*mu_GE/mu_GG - mu_GEE) ) - 
     ( mu_GE^2 + mu_GGE^2/mu_GG - mu_GGEE + D * (mu_GGE*mu_GE/mu_GG - mu_GEE) ) - 
-    E %*% ( MU_Z*mu_GE + MU_GZ*mu_GGE/mu_GG + A * (mu_GGE*mu_GE/mu_GG - mu_GEE) )
+    E %*% ( MU_Z*mu_GE + MU_GZ*mu_GGE/mu_GG - MU_GEZ + A * (mu_GGE*mu_GE/mu_GG - mu_GEE) )
   
   alpha_I <- alpha_I_num / alpha_I_denom
   
