@@ -183,7 +183,7 @@ GE_bias_normal_squaredmis <- function(beta_list, rho_list, prob_G, cov_Z=NULL, c
   # E[G1EZ] requires numerical integration
   f_G1_E_Z <- function(x, w, r_EZ, r_GE, r_GZ) {
   	( r_EZ * x * surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / sqrt(1-r_GE^2) ) * 
-  		(r_GZ-r_GE*r_GZ) / sqrt(1-r_GE^2) ) * x* dnorm(x)
+  		(r_GZ-r_GE*r_EZ) / sqrt(1-r_GE^2) ) * x* dnorm(x)
   }
   if (is.null(sig_mat_ZZ)) {
     mu_G1_E_Z <- 0

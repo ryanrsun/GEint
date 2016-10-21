@@ -32,7 +32,7 @@
 #' GE_test_moment_calcs(beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'			rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
-GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=1000000, test_threshold=0.01)
+GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=2000000, test_threshold=0.003)
 {
 	  # Need survival function
   	surv <- function(x) {1-pnorm(x)}
@@ -304,7 +304,7 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
   	if (abs(temp_test) > test_threshold) {warning('Problem with mu_GGE')}
   	
   	temp_test <- mu_GGh - mean(G*G*E*E)
-  	if (abs(temp_test) > test_threshold) {warning('Problem with mu_GGj')}
+  	if (abs(temp_test) > test_threshold) {warning('Problem with mu_GGh')}
   	
   	temp_test <- mu_GEE - mean(G*E*E)
   	if (abs(temp_test) > test_threshold) {warning('Problem with mu_GEE')}
@@ -321,7 +321,7 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
   	# Harder intermediate quantities involving Z and W
   	f_G1_E_Z <- function(x, w, r_EZ, r_GE, r_GZ) {
   		( r_EZ * x * surv( (w-x*r_GE) / sqrt(1-r_GE^2) ) + dnorm( (w-r_GE*x) / sqrt(1-r_GE^2) ) * 
-  			(r_GZ-r_GE*r_GZ) / sqrt(1-r_GE^2) ) * x* dnorm(x)
+  			(r_GZ-r_GE*r_EZ) / sqrt(1-r_GE^2) ) * x* dnorm(x)
   	}
   	if ( !is.null(sig_mat_ZZ) ) {
   	  mu_G1_E_Z <- rep(NA, num_Z)
