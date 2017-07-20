@@ -5,7 +5,7 @@
 \title{GE_test_moment_calcs.R}
 \usage{
 GE_test_moment_calcs(beta_list, rho_list, prob_G, cov_Z = NULL,
-  cov_W = NULL, num_sub = 1e+06, test_threshold = 0.01)
+  cov_W = NULL, num_sub = 2e+06, test_threshold = 0.003)
 }
 \arguments{
 \item{rho_list}{A list of the 6 pairwise covariances between the
