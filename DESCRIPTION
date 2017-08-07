@@ -1,9 +1,11 @@
 Package: GEint
 Type: Package
 Title: Misspecified Models for Gene-Environment Interaction 
-Version: 0.1.2
-Date: 2017-01-05
-Authors@R: person("Ryan", "Sun", email = "ryansun.work@gmail.com", role = c("aut", "cre"))
+Version: 0.1.4
+Date: 2017-08-04
+Authors@R: c(
+	person("Ryan", "Sun", email = "ryansun.work@gmail.com", role = c("aut", "cre")),
+	person("Richard", "Barfield", role="ctb"))
 Description: First major functionality is to compute the bias in misspecified linear gene-environment interaction models. The most 
 	generalized function for this objective is GE_bias().  However GE_bias() requires specification of many
 	higher order moments of covariates in the model.  If users are unsure about how to calculate/estimate
@@ -15,9 +17,10 @@ Description: First major functionality is to compute the bias in misspecified li
 	is to implement the Bootstrap Inference with Correct Sandwich (BICS) testing procedure, which we have found to provide better finite-sample
 	performance than other inference procedures for testing GxE interaction.  More details on these functions 
 	are available in Sun, Carroll, Christiani, and Lin, "Testing for Gene-Environment Interaction Under Exposure Misspecification"
-	(Submitted).
-Imports: 
+	(In Revision).
+Imports:
 	mvtnorm,
+	bindata,
 	nleqslv,
 	pracma,
 	speedglm,
@@ -27,5 +30,6 @@ Imports:
 License: GPL-3
 RoxygenNote: 5.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

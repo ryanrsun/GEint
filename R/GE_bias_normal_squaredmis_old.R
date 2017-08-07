@@ -1,7 +1,7 @@
-#' GE_bias_normal_squaredmis.R
+#' GE_bias_normal_squaredmis_old.R
 #'
 #' A function to calculate the bias in testing for GxE interaction, making many more
-#' assumptions than GE_bias().  The additional assumptions are added to simplify the process
+#' assumptions than GE_bias_old().  The additional assumptions are added to simplify the process
 #' of calculating/estimating many higher order moments which the user may not be familiar with. \cr
 #' The following assumptions are made: \cr
 #' (1) All fitted covariates besides G (that is, E, all Z, and all W) have a marginal standard 
@@ -51,10 +51,10 @@
 #'
 #' @export
 #' @examples 
-#' GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' GE_bias_normal_squaredmis_old( beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
-GE_bias_normal_squaredmis <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
+GE_bias_normal_squaredmis_old <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
 {
   # Need survival function.
   surv <- function(x) {1-pnorm(x)}
@@ -76,7 +76,7 @@ GE_bias_normal_squaredmis <- function(beta_list, rho_list, prob_G, cov_Z=NULL, c
   
   
   # Some error checking, make sure the covariance matrix is ok
-  translated_inputs <- GE_translate_inputs(beta_list, rho_list, prob_G, cov_Z, cov_W)
+  translated_inputs <- GE_translate_inputs_old(beta_list, rho_list, prob_G, cov_Z, cov_W)
   sig_mat <- translated_inputs$sig_mat_total
   sig_mat_ZZ <- translated_inputs$sig_mat_ZZ
   sig_mat_WW <- translated_inputs$sig_mat_WW

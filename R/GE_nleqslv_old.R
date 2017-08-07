@@ -1,30 +1,30 @@
-#' GE_nleqslv
+#' GE_nleqslv_old.R
 #'#'
 #' Uses package nleqslv to get a numerical solution to the score equations, which
-#' we can use to check our direct solution from GE_bias().
+#' we can use to check our direct solution from GE_bias_old().
 #' 
 #' @param beta_list A list of the effect sizes in the true model.
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 #' If Z or M is a vector, then beta_Z and beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
 #' @param cov_list A list of expectations (which happen to be covariances if all covariates
-#' are centered at 0) in the order specified by GE_enumerate_inputs().
+#' are centered at 0) in the order specified by GE_enumerate_inputs_old().
 #' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
 #' set cov(EZ) = 0 and cov(ZW) = 0.
-#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs().
-#' @param mu_list A list of means as specified by GE_enumerate_inputs().
-#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs().
+#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs_old().
+#' @param mu_list A list of means as specified by GE_enumerate_inputs_old().
+#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs_old().
 #' 
 #' @return A list of the fitted coefficients alpha
 #'
 #' @export
 #' @examples 
-#' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' solutions <- GE_bias_normal_squaredmis_old( beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
-#' GE_nleqslv(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
+#' GE_nleqslv_old(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
 #'						solutions$mu_list, solutions$HOM_list)
 
-GE_nleqslv <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
+GE_nleqslv_old <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 {
 
 	# Here we extract the relevant parameters from the inputs

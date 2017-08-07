@@ -1,4 +1,4 @@
-#' GE_BICS_set.R
+#' GE_BICS.R
 #'
 #' A function to perform inference on the GxE interaction regression coefficient.
 #' Shows better small sample performance than comparable methods.
@@ -21,7 +21,7 @@
 #' outcome <- rnorm(500)
 #' GE_BICS(outcome=outcome, design_mat=design_mat, desired_coef=4, outcome_type='C')
 
-GE_BICS_set <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type)
+GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type)
 {
 	colnames(design_mat) <- 1:ncol(design_mat)
 	n <- length(outcome)
@@ -36,6 +36,7 @@ GE_BICS_set <- function(outcome, design_mat, num_boots=1000, desired_coef, outco
 		stop('Invalid outcome type!')
 	}
 	beta_init <- summary(init_mod)$coefficients[desired_coef,1]
+	v_init <- summary(init_mod)$cov.unscaled[desired_coef, desired_coef]
 	
 	# Bootstrapping
 	b_vec <- rep(NA, num_boots)
@@ -86,7 +87,7 @@ GE_BICS_set <- function(outcome, design_mat, num_boots=1000, desired_coef, outco
 	a <- mean_Z / cee
 	
 	# Calculate p-value
-	test_stat <- (t(beta_init) %*% solve(v_k) %*% beta_init) / cee
+	test_stat <- (t(beta_init) %*% solve(v_init) %*% beta_init) / cee
 	p_value <- 1-pgamma(test_stat, shape=a/2, scale=2)
 	
 	return( p_value )

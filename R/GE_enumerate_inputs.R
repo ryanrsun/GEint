@@ -1,4 +1,4 @@
-#' GE_enumerate_inputs_set.R
+#' GE_enumerate_inputs.R
 #'
 #' Call this function to display the necessary inputs for GE_bias_set. For terms in 
 #' cov_mat_list like E[ZZ], these should be matrices where the (i,j) element is E[Z_i*Z_j].
@@ -7,9 +7,9 @@
 #'
 #' @export
 #' @examples 
-#' GE_enumerate_inputs_set()
+#' GE_enumerate_inputs()
 
-GE_enumerate_inputs_set <- function()
+GE_enumerate_inputs <- function()
 {
 	beta_help <- paste("beta_list should contain the following 6 inputs (in order):",
 					"beta_0",

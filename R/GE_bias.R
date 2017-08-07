@@ -1,4 +1,4 @@
-#' GE_bias_set.R
+#' GE_bias.R
 #'
 #' A function to calculate the bias in testing for GxE interaction.
 #' 
@@ -7,27 +7,27 @@
 #' If G or Z or M is a vector, then beta_G/beta_Z/beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
 #' @param cov_list A list of expectations (which happen to be covariances if all covariates
-#' are centered at 0) in the order specified by GE_enumerate_inputs_set().
+#' are centered at 0) in the order specified by GE_enumerate_inputs().
 #' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
 #' if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
 #' If describing expectations relating two vectors, i.e. Z includes two covariates and W
 #' includes three covariates, sort by the first term and then the second. Thus in the 
 #' example, the first three terms of cov(ZW) are cov(Z_1,W_1),cov(Z_1,W_2), cov(Z_1,W_3), 
 #' and the last three terms are cov(Z_3,W_1), cov(Z_3,W_2), cov(Z_3,W_3).
-#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs_set().
-#' @param mu_list A list of means as specified by GE_enumerate_inputs_set().
-#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs_set().
+#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs().
+#' @param mu_list A list of means as specified by GE_enumerate_inputs().
+#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs().
 #' 
 #' @return A list of the fitted coefficients alpha
 #'
 #' @export
 #' @examples 
-#' solutions <- GE_bias_normal_squaredmis_set( beta_list=as.list(runif(n=6, min=0, max=1)), 
-#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
-#' GE_bias_set(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
+#' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' rho_list=as.list(rep(0.3,6)), prob_G=0.3, cov_Z=1, cov_W=1)
+#' GE_bias(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
 #'						solutions$mu_list, solutions$HOM_list)
 
-GE_bias_set <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
+GE_bias <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 {
   # Record some initial quantities
   beta_0 <- beta_list[[1]]; beta_G <- beta_list[[2]]; beta_E <- beta_list[[3]]
@@ -41,7 +41,6 @@ GE_bias_set <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
   # Some means
   mu_f <- mu_list[[1]]; mu_h <- mu_list[[2]]; mu_Z <- as.matrix(mu_list[[3]], ncol=1)
   mu_M <- as.matrix(mu_list[[4]], ncol=1); mu_W <- as.matrix(mu_list[[5]], ncol=1)
-  
   
   # Some covariances
   mu_GE <- as.matrix(cov_list[[1]], ncol=1)

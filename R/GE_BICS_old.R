@@ -1,4 +1,4 @@
-#' GE_BICS.R
+#' GE_BICS_old.R
 #'
 #' A function to perform inference on the GxE interaction regression coefficient.
 #' Shows better small sample performance than comparable methods.
@@ -19,9 +19,9 @@
 #' G <- rbinom(n=500, size=2, prob=0.3)
 #' design_mat <- cbind(1, G, E, G*E)
 #' outcome <- rnorm(500)
-#' GE_BICS(outcome=outcome, design_mat=design_mat, desired_coef=4, outcome_type='C')
+#' GE_BICS_old(outcome=outcome, design_mat=design_mat, desired_coef=4, outcome_type='C')
 
-GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type)
+GE_BICS_old <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type)
 {
 	colnames(design_mat) <- 1:ncol(design_mat)
 	n <- length(outcome)

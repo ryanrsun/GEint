@@ -1,7 +1,7 @@
-#' GE_test_moment_calcs.R
+#' GE_test_moment_calcs_old.R
 #'
 #' Test function mostly for internal use to ensure the higher order moments (covariances)
-#' calculated in GE_bias_normal_squaredmis() are correct. Will give warning messages if
+#' calculated in GE_bias_normal_squaredmis_old() are correct. Will give warning messages if
 #' some calculations appear to be incorrect.  If receive warning messages, run again, and
 #' if still receive the same warning messages, something may be wrong.
 #'
@@ -29,10 +29,10 @@
 #' @export
 #' @keywords internal
 #' @examples 
-#' GE_test_moment_calcs(beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' GE_test_moment_calcs_old(beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'			rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
-GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=2000000, test_threshold=0.003)
+GE_test_moment_calcs_old <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=2000000, test_threshold=0.003)
 {
 	  # Need survival function
   	surv <- function(x) {1-pnorm(x)}
@@ -48,7 +48,7 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
     r_GW <- rho_GW / (2*dnorm(w))
    
    	# Get the total covariance matrix (also some basic validity checks)
-	  translated_inputs <- GE_translate_inputs(beta_list=beta_list, rho_list=rho_list, 
+	  translated_inputs <- GE_translate_inputs_old(beta_list=beta_list, rho_list=rho_list, 
 									prob_G=prob_G, cov_Z=cov_Z, cov_W=cov_W)
 	  sig_mat <- translated_inputs$sig_mat_total
 	  sig_mat_ZZ <- translated_inputs$sig_mat_ZZ

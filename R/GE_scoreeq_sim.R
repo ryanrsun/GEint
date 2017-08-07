@@ -1,8 +1,8 @@
-#' GE_scoreeq_sim_set.R
+#' GE_scoreeq_sim.R
 #'
 #' Here we perform simulation to verify that we have solved for
-#' the correct alpha values in GE_bias_norm_squaredmis_set().
-#' Make the same assumptions as in GE_bias_norm_squaredmis_set().
+#' the correct alpha values in GE_bias_norm_squaredmis().
+#' Make the same assumptions as in GE_bias_norm_squaredmis().
 #'
 #' @param num_sims The number of simulations to run, we suggest 5000.
 #' @param num_sub The number of subjects to generate in every simulation, we suggest 2000.
@@ -10,7 +10,7 @@
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 #' If G or Z or M is a vector, then beta_G/beta_Z/beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
-#' @param cov_list A list of expectations (which happen to be covariances if all covariates
+#' @param rho_list A list of expectations (which happen to be covariances if all covariates
 #' are centered at 0) in the order specified by GE_enumerate_inputs().
 #' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
 #' if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
@@ -31,9 +31,9 @@
 #' @export
 #' @examples 
 #' GE_scoreeq_sim( num_sims=10, num_sub=1000, beta_list=as.list(runif(n=6, min=0, max=1)), 
-#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
+#' rho_list=as.list(rep(0.3,6)), prob_G=0.3, cov_Z=1, cov_W=1)
 
-GE_scoreeq_sim_set <- function(num_sims=5000, num_sub=2000, beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, corr_G=NULL)
+GE_scoreeq_sim <- function(num_sims=5000, num_sub=2000, beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, corr_G=NULL)
 {
   # Need survival function.
   surv <- function(x) {1-pnorm(x)}
@@ -60,7 +60,7 @@ GE_scoreeq_sim_set <- function(num_sims=5000, num_sub=2000, beta_list, rho_list,
   }
   
   # Some error checking, make sure the covariance matrix is ok
-  translated_inputs <- GE_translate_inputs_set(beta_list=beta_list, rho_list=rho_list, 
+  translated_inputs <- GE_translate_inputs(beta_list=beta_list, rho_list=rho_list, 
                                                prob_G=prob_G, cov_Z=cov_Z, cov_W=cov_W, corr_G=corr_G)
   sig_mat <- translated_inputs$sig_mat_total
 

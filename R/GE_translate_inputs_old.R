@@ -1,6 +1,6 @@
-#' GE_translate_inputs.R
+#' GE_translate_inputs_old.R
 #'
-#' Mostly for internal use, function called by GE_bias_normal() and GE_scoreeq_sim()
+#' Mostly for internal use, function called by GE_bias_normal_old() and GE_scoreeq_sim_old()
 #' to translate the rho_list inputs and return a total covariance matrix for simulation/
 #' checking validity of covariance structure.  If invalid covariance structure, will stop
 #' and return an error message.
@@ -28,10 +28,10 @@
 #' @keywords internal
 #' @export
 #' @examples 
-#' GE_translate_inputs( beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' GE_translate_inputs_old( beta_list=as.list(runif(n=6, min=0, max=1)), 
 #'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
 
-GE_translate_inputs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
+GE_translate_inputs_old <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL)
 {
 	  # First, make sure we got good inputs
   	if (length(beta_list) != 6 | length(rho_list) != 6 | class(beta_list) != 'list' | class(rho_list) != 'list')

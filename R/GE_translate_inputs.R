@@ -1,4 +1,4 @@
-#' GE_translate_inputs_set.R
+#' GE_translate_inputs.R
 #'
 #' Mostly for internal use, function called by GE_bias_normal() and GE_scoreeq_sim()
 #' to translate the rho_list inputs and return a total covariance matrix for simulation/
@@ -29,16 +29,14 @@
 #'
 #' @return A list with the elements:
 #' \item{sig_mat_total}{The sigma parameter for rmvnorm call to generate our data.}
-#' \item{sig_mat_ZZ}{The covariance matrix of Z, i.e. E[ZZ^T]}
-#' \item{sig_mat_WW}{The covariance matrix of W, i.e. E[WW^T]}
 #'
 #' @keywords internal
 #' @export
 #' @examples 
-#' GE_translate_inputs_set( beta_list=as.list(runif(n=6, min=0, max=1)), 
-#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
+#' GE_translate_inputs( beta_list=as.list(runif(n=6, min=0, max=1)),
+#' rho_list=as.list(rep(0.3,6)), prob_G=0.3, cov_Z=1, cov_W=1)
 
-GE_translate_inputs_set <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, corr_G=NULL)
+GE_translate_inputs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, corr_G=NULL)
 {
 	  # First, make sure we got good inputs
   	if (length(beta_list) != 6 | length(rho_list) != 6 | class(beta_list) != 'list' | class(rho_list) != 'list')

@@ -1,4 +1,4 @@
-#' GE_enumerate_inputs.R
+#' GE_enumerate_inputs_old.R
 #'
 #' Call this function to display the necessary inputs for GE_bias.  If you see a term like
 #' mu_Gf, that means it is the scalar E[G*f(E)].  If you see a term like MU_GM, that means it
@@ -9,9 +9,9 @@
 #'
 #' @export
 #' @examples 
-#' GE_enumerate_inputs()
+#' GE_enumerate_inputs_old()
 
-GE_enumerate_inputs <- function()
+GE_enumerate_inputs_old <- function()
 {
 	beta_help <- paste("beta_list should contain the following 6 inputs (in order):",
 					"beta_0",

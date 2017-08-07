@@ -9,7 +9,7 @@
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 #' If G or Z or M is a vector, then beta_G/beta_Z/beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
-#' @param cov_list A list of expectations (which happen to be covariances if all covariates
+#' @param rho_list A list of expectations (which happen to be covariances if all covariates
 #' are centered at 0) in the order specified by GE_enumerate_inputs().
 #' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
 #' if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
@@ -24,20 +24,23 @@
 #' @param corr_G Should be a matrix giving the *pairwise correlations* between each SNP
 #' in the set, or NULL. Must be specified if G is a vector.  For example, the [2,3] element
 #' of the matrix would be the pairwise correlation between SNP2 and SNP3.
+#' @param num_sub Number of subjects to simulate/test with.  
+#' @param test_threshold How close does our simulated value have to be to the analytic value? 
 #'
 #' @return Nothing
 #'
 #' @export
 #' @keywords internal
 #' @examples 
-#' GE_test_moment_calcs(rho_list=as.list(rep(0.3,6)), prob_G=0.3)
+#' GE_test_moment_calcs(beta_list=as.list(runif(n=6, min=0, max=1)), 
+#' rho_list=as.list(rep(0.3,6)), prob_G=0.3, cov_Z=1, cov_W=1)
 
-GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=2000000, test_threshold=0.003)
+GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=NULL, num_sub=2000000, test_threshold=0.003, corr_G=NULL)
 {
     num_G <- length(beta_list[[2]])
 	  num_Z <- length(beta_list[[5]])
 	  num_W <- length(beta_list[[6]])
-    normal_squaredmis_results <- GE_bias_normal_squaredmis_set(beta_list=beta_list, 
+    normal_squaredmis_results <- GE_bias_normal_squaredmis(beta_list=beta_list, 
                                                                rho_list=rho_list, 
                                                                prob_G=prob_G, 
                                                                cov_Z=cov_Z, 
@@ -71,14 +74,14 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
 	  mu_fW <- as.matrix(cov_list[[10]], ncol=1)
 	  
 	  # Matrix covariances
-	  mu_GG <- cov_mat_list[[1]]
+	  mu_GG <- as.matrix(cov_mat_list[[1]])
 	  mu_GZ <- cov_mat_list[[2]]; mu_ZG <- t(mu_GZ)
 	  mu_GM <- cov_mat_list[[3]]
-	  mu_GW <- cov_mat_list[[4]]; mu_GW <- t(mu_WG)
-	  mu_ZZ <- cov_mat_list[[5]]
+	  mu_GW <- cov_mat_list[[4]]; mu_WG <- t(mu_GW)
+	  mu_ZZ <- as.matrix(cov_mat_list[[5]])
 	  mu_ZW <- cov_mat_list[[6]]; mu_WZ <- t(mu_ZW)
 	  mu_ZM <- cov_mat_list[[7]]
-	  mu_WW <- cov_mat_list[[8]]
+	  mu_WW <- as.matrix(cov_mat_list[[8]])
 	  mu_WM <- cov_mat_list[[9]]
 	  
 	  # Some higher order moments
@@ -170,7 +173,7 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
 	  
 	  # Now do G and E with Z
 	  if (num_Z > 0) {
-	    Z_mat <- test_data[, (2+2*num_G):(1+2*num_G+num_Z)]
+	    Z_mat <- as.matrix(test_data[, (2+2*num_G):(1+2*num_G+num_Z)])
 	    for (i in 1:num_Z) {
 	      
 	      temp_test <- rho_EZ[i] - cov(E,Z_mat[,i])
@@ -210,7 +213,7 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
 	  
 	  
 	  if (num_W > 0) {
-	    W_mat <- test_data[, (2+2*num_G+num_Z):(1+2*num_G+num_Z+num_W)]
+	    W_mat <- as.matrix(test_data[, (2+2*num_G+num_Z):(1+2*num_G+num_Z+num_W)])
 	    
 	    for (i in 1:num_W) {
 	      

@@ -1,4 +1,4 @@
-#' GE_nleqslv_set.R
+#' GE_nleqslv.R
 #'#'
 #' Uses package nleqslv to get a numerical solution to the score equations, which
 #' we can use to check our direct solution from GE_bias().
@@ -23,12 +23,12 @@
 #'
 #' @export
 #' @examples 
-#' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)), 
-#'							rho_list=as.list(rep(0.3,6)), prob_G=0.3)
-#' GE_nleqslv(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list, 
-#'						solutions$mu_list, solutions$HOM_list)
+#' solutions <- GE_bias_normal_squaredmis( beta_list=as.list(runif(n=6, min=0, max=1)),
+#' rho_list=as.list(rep(0.3,6)), prob_G=0.3, cov_Z=1, cov_W=1)
+#' GE_nleqslv(beta_list=solutions$beta_list, solutions$cov_list, solutions$cov_mat_list,
+#' solutions$mu_list, solutions$HOM_list)
 
-GE_nleqslv_set <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
+GE_nleqslv <- function(beta_list, cov_list, cov_mat_list, mu_list, HOM_list)
 {
 
   # Record some initial quantities
