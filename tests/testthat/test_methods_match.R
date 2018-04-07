@@ -175,7 +175,7 @@ test_that("GE_bias(), GE_nleqslv(), GE_norm_squaredmis(), GE_scoreeq_sim()
                                 corr_G=corr_G)
  
   expect_equal(unname(unlist(new_normal_squaredmis$alpha_list)), 
-               new_nleqslv$x)
+               new_nleqslv$x, tolerance = 10^(-7))
   expect_equal(new_nleqslv$x, unname(new_sim), tolerance = 0.01)
   
   
@@ -205,7 +205,7 @@ test_that("GE_bias(), GE_nleqslv(), GE_norm_squaredmis(), GE_scoreeq_sim()
                                 corr_G=corr_G)
   
   expect_equal(unname(unlist(new_normal_squaredmis$alpha_list)), 
-               new_nleqslv$x)
+               new_nleqslv$x, tolerance = 10^(-7))
   expect_equal(new_nleqslv$x, unname(new_sim), tolerance = 0.01)
   
   
@@ -235,7 +235,7 @@ test_that("GE_bias(), GE_nleqslv(), GE_norm_squaredmis(), GE_scoreeq_sim()
                                 corr_G=corr_G)
   
   expect_equal(unname(unlist(new_normal_squaredmis$alpha_list)), 
-               new_nleqslv$x)
+               new_nleqslv$x, tolerance = 10^(-7))
   expect_equal(new_nleqslv$x, unname(new_sim), tolerance = 0.01)
   
   ##################################################################
@@ -264,7 +264,7 @@ test_that("GE_bias(), GE_nleqslv(), GE_norm_squaredmis(), GE_scoreeq_sim()
                                 corr_G=corr_G)
   
   expect_equal(unname(unlist(new_normal_squaredmis$alpha_list)), 
-               new_nleqslv$x)
+               new_nleqslv$x, tolerance = 10^(-7))
   expect_equal(new_nleqslv$x, unname(new_sim), tolerance = 0.01)
 })
 
