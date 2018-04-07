@@ -21,7 +21,7 @@
 #' outcome <- rnorm(500)
 #' GE_BICS(outcome=outcome, design_mat=design_mat, desired_coef=4, outcome_type='C')
 
-GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type)
+GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_type, check_singular=FALSE)
 {
 	colnames(design_mat) <- 1:ncol(design_mat)
 	n <- length(outcome)
@@ -50,7 +50,7 @@ GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_t
 		
 		# If n small, need to check and make sure we can do the fitting/d_mat nonsingular.
 		# This runs fast when n small so ok to use a little more computing power.
-		if (n <= 500)
+		if (n <= 500 | check_singular)
 		{
 			svd_min <- svd(temp_X)$d[ncol(temp_X)]
 			if (svd_min < 10^(-4)) {next}
