@@ -8,6 +8,7 @@
 #' @param num_boots The number of bootstrap resamples to perform - we suggest 1000
 #' @param desired_coef The column in the design matrix holding the interaction covariate
 #' @param outcome_type Either 'D' for dichotomous outcome or 'C' for continuous outcome
+#' @param check_singular Make sure the design matrix can be inverted for variance estimation
 #' 
 #' @return The p-value for the interaction effect
 #'
@@ -67,7 +68,7 @@ GE_BICS <- function(outcome, design_mat, num_boots=1000, desired_coef, outcome_t
 			v_k <- ( (bread %*% meat %*% bread)[desired_coef,desired_coef] )	
 		} else {
 			boot_mod <- tryCatch(speedglm::speedglm.wfit(y=temp_Y, X=temp_X, family=binomial()), 
-				warning=function(w) w, error=function(e) e)
+				error=function(e) e)
 			if (length(class(boot_mod)) > 1) {next}
 			
 			fitted <- as.numeric( rje::expit( temp_X %*% boot_mod$coefficients ) )
