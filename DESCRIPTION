@@ -1,8 +1,8 @@
 Package: GEint
 Type: Package
 Title: Misspecified Models for Gene-Environment Interaction 
-Version: 0.1.4
-Date: 2017-08-04
+Version: 0.1.5
+Date: 2019-01-14
 Authors@R: c(
 	person("Ryan", "Sun", email = "ryansun.work@gmail.com", role = c("aut", "cre")),
 	person("Richard", "Barfield", role="ctb"))
@@ -28,7 +28,7 @@ Imports:
 	geepack,
 	stats
 License: GPL-3
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown,
     testthat
