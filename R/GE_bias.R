@@ -7,16 +7,22 @@
 #' If G or Z or M is a vector, then beta_G/beta_Z/beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
 #' @param cov_list A list of expectations (which happen to be covariances if all covariates
-#' are centered at 0) in the order specified by GE_enumerate_inputs().
-#' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
-#' if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
+#' are centered at 0) in the following order: mu_GE, mu_Gf, mu_Gh, mu_EE, mu_Ef, mu_EZ,
+#' mu_EM, mu_EW, MU_fZ, MU_fW. If Z and/or M/W do not exist in your model, then treat them as constants 0. 
+#' See Sun et al., Biometrics 2018 for explanation of terms.
+#' For example, if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
 #' If describing expectations relating two vectors, i.e. Z includes two covariates and W
 #' includes three covariates, sort by the first term and then the second. Thus in the 
 #' example, the first three terms of cov(ZW) are cov(Z_1,W_1),cov(Z_1,W_2), cov(Z_1,W_3), 
 #' and the last three terms are cov(Z_3,W_1), cov(Z_3,W_2), cov(Z_3,W_3).
-#' @param cov_mat_list  A list of matrices of expectations as specified by GE_enumerate_inputs().
-#' @param mu_list A list of means as specified by GE_enumerate_inputs().
-#' @param HOM_list A list of higher order moments as specified by GE_enumerate_inputs().
+#' @param cov_mat_list A list of matrices of expectations. In order: 
+#' mu_GG, mu_GZ, mu_GM, mu_GW, mu_ZZ, mu_ZW, mu_WM, mu_WW, mu_WM.
+#' See Sun et al., Biometrics 2018 for explanation of terms.
+#' @param mu_list A list of means. Should contain, in the following order,
+#' mu_f, mu_h, mu_Z, mu_M, mu_W. See Sun et al., Biometrics 2018 for explanation of terms.
+#' @param HOM_list A list of higher order moments. In order: "mu_GEG, mu_GhG, mu_GEE,
+#' mu_GEf, mu_GEh, MU_GEZ, MU_GEM, MU_GEW, MU_GhW, MU_GhZ, mu_GEEG, mu_GEfG, mu_GEhG.
+#' See Sun et al., Biometrics 2018 for explanation of terms.
 #' 
 #' @return A list of the fitted coefficients alpha
 #'

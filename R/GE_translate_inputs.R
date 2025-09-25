@@ -9,14 +9,6 @@
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
 #' If G or Z or M is a vector, then beta_G/beta_Z/beta_M should be vectors.
 #' If Z and/or M/W do not exist in your model, then set beta_Z and/or beta_M = 0.
-#' @param cov_list A list of expectations (which happen to be covariances if all covariates
-#' are centered at 0) in the order specified by GE_enumerate_inputs().
-#' If Z and/or M/W do not exist in your model, then treat them as constants 0. For example,
-#' if Z doesn't exist and W includes 2 covariates, then set cov(EZ) = 0 and cov(ZW) = (0,0).
-#' If describing expectations relating two vectors, i.e. Z includes two covariates and W
-#' includes three covariates, sort by the first term and then the second. Thus in the 
-#' example, the first three terms of cov(ZW) are cov(Z_1,W_1),cov(Z_1,W_2), cov(Z_1,W_3), 
-#' and the last three terms are cov(Z_3,W_1), cov(Z_3,W_2), cov(Z_3,W_3).
 #' @param prob_G Probability that each allele is equal to 1.  Since each SNP has
 #' two alleles, the expectation of G is 2*prob_G.
 #' @param cov_Z Should be a matrix equal to cov(Z) or NULL if no Z.  

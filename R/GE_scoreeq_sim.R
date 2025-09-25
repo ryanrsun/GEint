@@ -119,8 +119,6 @@ GE_scoreeq_sim <- function(num_sims=5000, num_sub=2000, beta_list, rho_list, pro
 		b_hat <- solve(t(d_wrong) %*% d_wrong) %*% t(d_wrong) %*% Y
 		results[i, 1:length(b_hat)] <- b_hat
 		
-		# Checkpoint
-		if (i%%1000 == 0) {cat(i, "done\n")}
 	}
 	
 	# Get the column names correct

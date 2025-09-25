@@ -3,7 +3,7 @@
 #' Test function mostly for internal use to ensure the higher order moments (covariances)
 #' calculated in GE_bias_normal_squaredmis() are correct. Will give warning messages if
 #' some calculations appear to be incorrect.  If receive warning messages, run again, and
-#' if still receive the same warning messages, something may be wrong.
+#' if still receive the same warning messages, something may be wrong. If no warnings after running, all is ok.
 #'
 #' @param beta_list A list of the effect sizes in the true model.
 #' Use the order beta_0, beta_G, beta_E, beta_I, beta_Z, beta_M.
@@ -273,8 +273,6 @@ GE_test_moment_calcs <- function(beta_list, rho_list, prob_G, cov_Z=NULL, cov_W=
 	      }
 	    }
 	  }
-
-  	cat('Done')
 }
 
 
